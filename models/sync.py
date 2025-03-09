@@ -6,4 +6,4 @@ class SyncDataRecordRequest(BaseModel):
     id: str
     data: Dict[str, Any]
     collection: str
-    user_id: Optional[int] = None  # Optional field 
+    user_id: Optional[int] = None 
