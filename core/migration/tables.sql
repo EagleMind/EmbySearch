@@ -13,3 +13,10 @@ CREATE TABLE datarecord (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     user_id INTEGER REFERENCES "user"(id)
 );
+
+CREATE TABLE apikey (
+    id SERIAL PRIMARY KEY,
+    key TEXT NOT NULL UNIQUE,
+    subscription_type TEXT NOT NULL,
+    user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE
+);

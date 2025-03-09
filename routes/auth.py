@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_async_db
@@ -6,6 +6,7 @@ from models.user import User
 from core.security import hash_password, verify_password, create_jwt_token
 from fastapi import Depends
 from sqlalchemy import select
+from services.api_key_service import APIKeyService
 
 router = APIRouter()
 
@@ -35,4 +36,10 @@ async def login(user: UserLogin, db: AsyncSession = Depends(get_async_db)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     token = create_jwt_token(user_record.id)
-    return {"access_token": token, "token_type": "bearer"} 
+    return {"access_token": token, "token_type": "bearer"}
+
+@router.post("/generate-api-key/{user_id}")
+async def generate_api_key(user_id: int, subscription_type: str, db: AsyncSession = Depends(get_async_db)):
+    api_key_service = APIKeyService(db)
+    api_key = await api_key_service.create_api_key(user_id, subscription_type)
+    return {"api_key": api_key.key, "subscription_type": api_key.subscription_type} 
