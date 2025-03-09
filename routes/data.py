@@ -14,14 +14,13 @@ async def create_data_record(
     db: AsyncSession = Depends(get_async_db)  # Get the database session
 ):
     api_key_service = APIKeyService(db)
-    is_valid = await api_key_service.validate_api_key(api_key)
-    
-    if not is_valid:
-        raise HTTPException(status_code=403, detail="Invalid API key")
-
     # Fetch the API key details to check subscription type
     api_key_details = await api_key_service.get_api_key_details(api_key)
     
+    if not api_key_details:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+
+
     if api_key_details.subscription_type not in ["Basic", "Premium"]:
         raise HTTPException(status_code=403, detail="Access denied for this resource")
 
