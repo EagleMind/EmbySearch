@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     CHROMA_PATH: str = "./chroma_data"
     WEBHOOK_SECRET: str 
     MASTER_API_KEY: str 
+    SECRET_KEY:str
     model_config = {
         "env_file": ".env",
         "extra":"allow"
